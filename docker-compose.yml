@@ -23,7 +23,7 @@ services:
     volumes:
       - ./backend:/app
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://workclock:dev_password@postgres/workclock}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://workclock:dev_password@postgres/workclock}
       SECRET_KEY: ${SECRET_KEY:-dev_secret_key_change_in_production}
       BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-["http://localhost:5173"]}
     ports:

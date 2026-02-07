@@ -1,42 +1,53 @@
 """
-Database configuration and session management.
-Sets up SQLAlchemy engine and session factory.
+Async database configuration and session management.
+Sets up async SQLAlchemy engine and session factory.
 """
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.orm import DeclarativeBase
+from typing import AsyncGenerator
 
 from app.config import settings
 
-# Create database engine
-engine = create_engine(
+
+class Base(DeclarativeBase):
+    """Base class for all models."""
+    pass
+
+
+# Create async database engine
+engine = create_async_engine(
     settings.DATABASE_URL,
+    echo=settings.ENVIRONMENT == "development",
     pool_pre_ping=True,  # Verify connections before using
     pool_size=5,
     max_overflow=10
 )
 
-# Session factory
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Async session factory
+AsyncSessionLocal = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autocommit=False,
+    autoflush=False
+)
 
-# Base class for models
-Base = declarative_base()
 
-
-def get_db():
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
-    Dependency for FastAPI routes to get database session.
+    Dependency for FastAPI routes to get async database session.
 
     Yields:
-        Database session that automatically closes after use.
+        Async database session that automatically closes after use.
 
     Example:
         @app.get("/employees")
-        def get_employees(db: Session = Depends(get_db)):
-            return db.query(Employee).all()
+        async def get_employees(db: AsyncSession = Depends(get_db)):
+            result = await db.execute(select(Employee))
+            return result.scalars().all()
     """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()

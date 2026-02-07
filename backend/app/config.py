@@ -10,8 +10,8 @@ import json
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
-    # Database
-    DATABASE_URL: str
+    # Database (async driver)
+    DATABASE_URL: str  # Must use postgresql+asyncpg://...
 
     # Security
     SECRET_KEY: str
