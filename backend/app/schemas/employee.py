@@ -10,7 +10,7 @@ class EmployeeBase(BaseModel):
     """Base employee schema with common fields."""
     name: str = Field(..., min_length=1, max_length=255)
     job_role: str = Field(..., min_length=1, max_length=255)
-    daily_rate: Decimal = Field(..., gt=0, decimal_places=2)
+    daily_rate: Decimal = Field(..., gt=0)
     clock_code: str = Field(..., min_length=4, max_length=4, pattern=r'^\d{4}$')
 
     @field_validator('clock_code')
@@ -31,7 +31,7 @@ class EmployeeUpdate(BaseModel):
     """Schema for updating an employee (all fields optional)."""
     name: str | None = Field(None, min_length=1, max_length=255)
     job_role: str | None = Field(None, min_length=1, max_length=255)
-    daily_rate: Decimal | None = Field(None, gt=0, decimal_places=2)
+    daily_rate: Decimal | None = Field(None, gt=0)
     clock_code: str | None = Field(None, min_length=4, max_length=4, pattern=r'^\d{4}$')
     is_active: bool | None = None
 
