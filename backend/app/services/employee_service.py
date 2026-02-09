@@ -198,10 +198,14 @@ async def deactivate_employee(
     Raises:
         HTTPException: 404 if employee not found
         HTTPException: 400 if employee is already inactive
+        HTTPException: 400 if employee has an open shift
 
     Example:
         deactivated = await deactivate_employee(db, 1)
     """
+    # Import here to avoid circular dependency
+    from app.services.clock_service import get_open_shift_for_employee
+
     # Get employee
     employee = await get_employee_by_id(db, employee_id)
 
@@ -210,6 +214,14 @@ async def deactivate_employee(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Employee is already inactive"
+        )
+
+    # Check if employee has an open shift (clocked in but not out)
+    has_open_shift = await get_open_shift_for_employee(db, employee_id)
+    if has_open_shift:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot deactivate employee with an open shift. Employee must clock out first."
         )
 
     # Deactivate employee
