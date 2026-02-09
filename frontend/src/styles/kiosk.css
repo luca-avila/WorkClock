@@ -1,0 +1,323 @@
+/**
+ * Kiosk styles - Full-screen, touch-friendly interface
+ *
+ * Design principles:
+ * - Large touch targets (min 80px)
+ * - High contrast colors
+ * - Clear visual feedback
+ * - Fullscreen immersive experience
+ */
+
+/* Container - Full screen */
+.kiosk-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Header */
+.kiosk-header {
+  padding: 2rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.kiosk-time {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.kiosk-date {
+  font-size: 1.5rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* Main content */
+.kiosk-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.kiosk-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Instruction text */
+.kiosk-instruction {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+/* PIN display */
+.kiosk-pin-display {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  justify-content: center;
+}
+
+.kiosk-pin-dot {
+  font-size: 3rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.kiosk-pin-dot.empty {
+  opacity: 0.5;
+}
+
+/* Keypad */
+.kiosk-keypad {
+  width: 100%;
+  max-width: 400px;
+}
+
+.kiosk-keypad-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.kiosk-key {
+  height: 80px;
+  font-size: 2rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.kiosk-key:active {
+  transform: scale(0.95);
+}
+
+.kiosk-key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Number keys */
+.kiosk-key-number {
+  background: white;
+  color: #667eea;
+}
+
+.kiosk-key-number:hover:not(:disabled) {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Clear key */
+.kiosk-key-clear {
+  background: #ff6b6b;
+  color: white;
+}
+
+.kiosk-key-clear:hover:not(:disabled) {
+  background: #ff5252;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Enter key */
+.kiosk-key-enter {
+  background: #51cf66;
+  color: white;
+}
+
+.kiosk-key-enter:hover:not(:disabled) {
+  background: #40c057;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kiosk-key-enter:disabled {
+  background: #a0a0a0;
+}
+
+/* Status messages */
+.kiosk-status {
+  width: 100%;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: slideIn 0.3s ease;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kiosk-status-success {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+}
+
+.kiosk-status-error {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+}
+
+.kiosk-status-message {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.kiosk-status-details {
+  font-size: 1.75rem;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+/* Footer */
+.kiosk-footer {
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.kiosk-footer-text {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  font-weight: 300;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .kiosk-time {
+    font-size: 3rem;
+  }
+
+  .kiosk-date {
+    font-size: 1.2rem;
+  }
+
+  .kiosk-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .kiosk-instruction {
+    font-size: 1.25rem;
+  }
+
+  .kiosk-pin-dot {
+    width: 50px;
+    height: 50px;
+    font-size: 2.5rem;
+  }
+
+  .kiosk-key {
+    height: 70px;
+    font-size: 1.75rem;
+  }
+
+  .kiosk-status-message {
+    font-size: 2rem;
+  }
+
+  .kiosk-status-details {
+    font-size: 1.5rem;
+  }
+}
+
+/* Landscape mode optimizations */
+@media (max-height: 600px) and (orientation: landscape) {
+  .kiosk-header {
+    padding: 1rem;
+  }
+
+  .kiosk-time {
+    font-size: 2rem;
+  }
+
+  .kiosk-date {
+    font-size: 1rem;
+  }
+
+  .kiosk-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .kiosk-instruction {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .kiosk-pin-display {
+    margin-bottom: 1.5rem;
+  }
+
+  .kiosk-pin-dot {
+    width: 40px;
+    height: 40px;
+    font-size: 2rem;
+  }
+
+  .kiosk-key {
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .kiosk-status {
+    padding: 2rem 1.5rem;
+  }
+
+  .kiosk-status-message {
+    font-size: 1.75rem;
+  }
+
+  .kiosk-status-details {
+    font-size: 1.25rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .kiosk-key {
+    height: 90px;
+  }
+}
