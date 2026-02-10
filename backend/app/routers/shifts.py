@@ -4,7 +4,7 @@ Shifts router for reporting and analytics.
 All endpoints are read-only and require admin authentication.
 Shifts are created automatically by ClockService on clock-out.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -66,8 +66,9 @@ async def list_shifts(
         }
     """
     # Parse dates if provided
+    # For end_date, add 1 day to include the entire selected day (inclusive)
     start_dt = datetime.fromisoformat(start_date) if start_date else None
-    end_dt = datetime.fromisoformat(end_date) if end_date else None
+    end_dt = datetime.fromisoformat(end_date) + timedelta(days=1) if end_date else None
 
     # Get shifts
     shifts, total = await shift_service.list_shifts(

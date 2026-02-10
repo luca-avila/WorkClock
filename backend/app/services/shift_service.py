@@ -55,7 +55,9 @@ async def list_shifts(
     if start_date is not None:
         filters.append(Shift.started_at >= start_date)
     if end_date is not None:
-        filters.append(Shift.ended_at <= end_date)
+        # end_date is expected to be start of next day (exclusive upper bound)
+        # This makes the selected end date inclusive of the entire day
+        filters.append(Shift.ended_at < end_date)
 
     if filters:
         query = query.where(and_(*filters))
