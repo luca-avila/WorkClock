@@ -9,8 +9,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # No exposed ports - only accessible within Docker network
-    # Use docker compose exec postgres psql if needed
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U workclock"]
       interval: 10s
@@ -26,7 +26,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://workclock:dev_password@postgres/workclock}
       SECRET_KEY: ${SECRET_KEY:-dev_secret_key_change_in_production}
       BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-["http://localhost:5173"]}
-    # No exposed ports - accessed via nginx reverse proxy
+    ports:
+      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -39,7 +40,8 @@ services:
       - /app/node_modules
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
-    # No exposed ports - served via nginx
+    ports:
+      - "5173:5173"
     depends_on:
       - backend
 
