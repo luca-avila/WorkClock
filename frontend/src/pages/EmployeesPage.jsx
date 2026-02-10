@@ -10,6 +10,7 @@
  */
 import { useState, useEffect } from 'react'
 import { getEmployees, createEmployee, updateEmployee, deactivateEmployee } from '../api/employees'
+import Toast from '../components/Toast'
 import '../styles/admin.css'
 
 const EmployeesPage = () => {
@@ -26,6 +27,9 @@ const EmployeesPage = () => {
     clock_code: ''
   })
   const [formErrors, setFormErrors] = useState({})
+  const [submitting, setSubmitting] = useState(false)
+  const [deactivating, setDeactivating] = useState(null)
+  const [toast, setToast] = useState(null)
 
   // Load employees on mount and when filter changes
   useEffect(() => {
@@ -70,10 +74,17 @@ const EmployeesPage = () => {
     }
 
     try {
+      setDeactivating(employee.id)
       await deactivateEmployee(employee.id)
       await loadEmployees()
+      setToast({ message: `${employee.name} has been deactivated`, type: 'success' })
     } catch (err) {
-      alert(err.response?.data?.detail || 'Failed to deactivate employee')
+      setToast({
+        message: err.response?.data?.detail || 'Failed to deactivate employee',
+        type: 'error'
+      })
+    } finally {
+      setDeactivating(null)
     }
   }
 
@@ -112,17 +123,22 @@ const EmployeesPage = () => {
     }
 
     try {
+      setSubmitting(true)
       if (editingEmployee) {
         await updateEmployee(editingEmployee.id, formData)
+        setToast({ message: `${formData.name} has been updated`, type: 'success' })
       } else {
         await createEmployee(formData)
+        setToast({ message: `${formData.name} has been created`, type: 'success' })
       }
 
       setShowModal(false)
       await loadEmployees()
     } catch (err) {
       const detail = err.response?.data?.detail || 'Failed to save employee'
-      alert(detail)
+      setToast({ message: detail, type: 'error' })
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -136,7 +152,15 @@ const EmployeesPage = () => {
   }
 
   return (
-    <div className="admin-container">
+    <>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      <div className="admin-container">
       <div className="admin-header">
         <h1>Employee Management</h1>
         <button className="btn btn-primary" onClick={handleAddClick}>
@@ -218,8 +242,9 @@ const EmployeesPage = () => {
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDeactivate(employee)}
+                          disabled={deactivating === employee.id}
                         >
-                          Deactivate
+                          {deactivating === employee.id ? 'Deactivating...' : 'Deactivate'}
                         </button>
                       )}
                     </div>
@@ -316,11 +341,12 @@ const EmployeesPage = () => {
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => setShowModal(false)}
+                  disabled={submitting}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingEmployee ? 'Update' : 'Create'}
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                  {submitting ? 'Saving...' : (editingEmployee ? 'Update' : 'Create')}
                 </button>
               </div>
             </form>
@@ -328,6 +354,7 @@ const EmployeesPage = () => {
         </div>
       )}
     </div>
+    </>
   )
 }
 

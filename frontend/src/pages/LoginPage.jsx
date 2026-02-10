@@ -14,7 +14,7 @@ function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/admin/employees')
+      navigate('/admin')
     }
   }, [isAuthenticated, navigate])
 
@@ -30,11 +30,26 @@ function LoginPage() {
       return
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address')
+      setLoading(false)
+      return
+    }
+
+    // Validate password length
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters')
+      setLoading(false)
+      return
+    }
+
     // Attempt login
     const result = await login(email, password)
 
     if (result.success) {
-      navigate('/admin/employees')
+      navigate('/admin')
     } else {
       setError(result.error)
       setLoading(false)

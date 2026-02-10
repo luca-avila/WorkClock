@@ -153,8 +153,20 @@ async def update_employee(
     # Get existing employee
     employee = await get_employee_by_id(db, employee_id)
 
-    # If clock code is being updated, check for conflicts
-    if employee_data.clock_code is not None:
+    # If clock code is being updated, check for conflicts and open shifts
+    if employee_data.clock_code is not None and employee_data.clock_code != employee.clock_code:
+        # Import here to avoid circular dependency
+        from app.services.clock_service import get_open_shift_for_employee
+
+        # Check if employee has an open shift
+        has_open_shift = await get_open_shift_for_employee(db, employee_id)
+        if has_open_shift:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot change clock code while employee has an open shift. Employee must clock out first."
+            )
+
+        # Check for clock code conflicts with other active employees
         result = await db.execute(
             select(Employee).where(
                 Employee.clock_code == employee_data.clock_code,

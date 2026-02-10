@@ -10,6 +10,7 @@
 import { useState, useEffect } from 'react'
 import { getShifts, getMonthlyReport } from '../api/shifts'
 import { getEmployees } from '../api/employees'
+import Toast from '../components/Toast'
 import '../styles/admin.css'
 
 const ShiftsPage = () => {
@@ -18,6 +19,7 @@ const ShiftsPage = () => {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [toast, setToast] = useState(null)
 
   // Filters
   const [filters, setFilters] = useState({
@@ -78,7 +80,23 @@ const ShiftsPage = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target
-    setFilters(prev => ({ ...prev, [name]: value, offset: 0 }))
+    const newFilters = { ...filters, [name]: value, offset: 0 }
+
+    // Validate date range
+    if (name === 'start_date' || name === 'end_date') {
+      const startDate = name === 'start_date' ? value : filters.start_date
+      const endDate = name === 'end_date' ? value : filters.end_date
+
+      if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+        setToast({
+          message: 'End date cannot be before start date',
+          type: 'warning'
+        })
+        return
+      }
+    }
+
+    setFilters(newFilters)
   }
 
   const handleClearFilters = () => {
@@ -116,7 +134,10 @@ const ShiftsPage = () => {
       setReportData(data)
       setShowReport(true)
     } catch (err) {
-      alert(err.response?.data?.detail || 'Failed to generate report')
+      setToast({
+        message: err.response?.data?.detail || 'Failed to generate report',
+        type: 'error'
+      })
     } finally {
       setReportLoading(false)
     }
@@ -126,7 +147,15 @@ const ShiftsPage = () => {
   const totalPages = Math.ceil(total / filters.limit)
 
   return (
-    <div className="admin-container">
+    <>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      <div className="admin-container">
       <div className="admin-header">
         <h1>Shift Reports</h1>
         <button className="btn btn-primary" onClick={() => setShowReport(true)}>
@@ -355,6 +384,7 @@ const ShiftsPage = () => {
         </div>
       )}
     </div>
+    </>
   )
 }
 
