@@ -380,3 +380,95 @@ body {
   font-size: 12px;
   margin-top: 4px;
 }
+
+/* Filters Section */
+.filters-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.filters-section select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Table Info */
+.table-info {
+  margin-bottom: 12px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Large Modal for Reports */
+.modal-large {
+  max-width: 800px;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+/* Report Inputs */
+.report-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.report-inputs select,
+.report-inputs input[type="number"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Report Results */
+.report-results {
+  margin-top: 24px;
+}
+
+.report-results h3 {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.report-total {
+  background-color: #f8f9fa;
+  border-top: 2px solid #dee2e6;
+}
+
+.report-total td {
+  font-size: 16px;
+  padding: 16px;
+}

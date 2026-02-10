@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import KioskPage from './pages/KioskPage'
 import EmployeesPage from './pages/EmployeesPage'
+import ShiftsPage from './pages/ShiftsPage'
 
 function App() {
   return (
@@ -17,6 +18,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <EmployeesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/shifts"
+            element={
+              <ProtectedRoute>
+                <ShiftsPage />
               </ProtectedRoute>
             }
           />
