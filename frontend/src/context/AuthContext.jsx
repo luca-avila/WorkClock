@@ -13,13 +13,25 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null)
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  // Decode JWT token to get user info
+  const decodeToken = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      return { email: payload.email }
+    } catch {
+      return null
+    }
+  }
 
   // Load token from localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
     if (storedToken) {
       setToken(storedToken)
+      setUser(decodeToken(storedToken))
     }
     setLoading(false)
   }, [])
@@ -32,6 +44,7 @@ export const AuthProvider = ({ children }) => {
       // Store token
       localStorage.setItem('token', access_token)
       setToken(access_token)
+      setUser(decodeToken(access_token))
 
       return { success: true }
     } catch (error) {
@@ -45,11 +58,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     apiLogout()
+    localStorage.removeItem('token')
     setToken(null)
+    setUser(null)
   }
 
   const value = {
     token,
+    user,
     isAuthenticated: !!token,
     loading,
     login,

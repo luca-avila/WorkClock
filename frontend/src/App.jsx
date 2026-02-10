@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminLayout from './components/AdminLayout'
 import LoginPage from './pages/LoginPage'
 import KioskPage from './pages/KioskPage'
+import DashboardPage from './pages/DashboardPage'
 import EmployeesPage from './pages/EmployeesPage'
 import ShiftsPage from './pages/ShiftsPage'
 
@@ -14,10 +16,22 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/kiosk" element={<KioskPage />} />
           <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <DashboardPage />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/employees"
             element={
               <ProtectedRoute>
-                <EmployeesPage />
+                <AdminLayout>
+                  <EmployeesPage />
+                </AdminLayout>
               </ProtectedRoute>
             }
           />
@@ -25,7 +39,9 @@ function App() {
             path="/admin/shifts"
             element={
               <ProtectedRoute>
-                <ShiftsPage />
+                <AdminLayout>
+                  <ShiftsPage />
+                </AdminLayout>
               </ProtectedRoute>
             }
           />
